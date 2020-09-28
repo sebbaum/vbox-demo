@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+	ServerName <%= vars['SERVER_NAME'] %>
+	DocumentRoot <%= vars['WEB_ROOT'] %>
+	<% if vars['USE_SSL'] %>
+	Redirect / https://<%= vars['SERVER_NAME'] %>/
+	<% end %>
+
+	#LogLevel info ssl:warn
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+<% if vars['USE_SSL'] %>
+<VirtualHost _default_:443>
+	ServerName <%= vars['SERVER_NAME'] %>
+	DocumentRoot <%= vars['WEB_ROOT'] %>
+
+	SSLEngine on
+	SSLCertificateKeyFile /var/certificates/vbox.key
+	SSLCertificateFile /var/certificates/vbox.cert
+
+	#LogLevel info ssl:warn
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+<% end %>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
